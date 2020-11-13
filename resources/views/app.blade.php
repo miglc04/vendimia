@@ -29,7 +29,7 @@
             Inicio
           </a>
           <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-            <a class="dropdown-item" href="#">Ventas</a>
+            <a class="dropdown-item" href="{{ route('ventas.index') }}">Ventas</a>
             <div class="dropdown-divider"></div>
             <a class="dropdown-item" href="#">Clientes</a>
             <a class="dropdown-item" href="#">Articulos</a>
