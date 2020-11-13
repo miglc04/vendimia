@@ -38,7 +38,7 @@
         </li>
       </ul>
       <div class="text-white">
-        La Vendimia {{ date('d/m/Y') }}
+        Fecha {{ date('d/m/Y') }}
       </div>
     </div>
   </nav>

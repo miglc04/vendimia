@@ -27,6 +27,7 @@ class VentaController extends Controller
     public function create()
     {
 
+        return view('ventas_create', compact('venta'));
     }
 
     /**
