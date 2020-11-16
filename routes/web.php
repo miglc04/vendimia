@@ -18,3 +18,10 @@ Route::get('/', function () {
 });
 
 Route::resource('ventas', 'VentaController');
+
+/* AJAX */
+Route::get('busqueda/clientes', 'BusquedaController@clientes')
+    ->name('busqueda.clientes');
+
+Route::get('busqueda/articulos', 'BusquedaController@articulos')
+    ->name('busqueda.articulos');
