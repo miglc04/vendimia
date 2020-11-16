@@ -14,7 +14,7 @@ class VentaController extends Controller
      */
     public function index()
     {
-        $ventas = Venta::all();
+        $ventas = Venta::orderBy('id', 'desc')->get();
 
         return view('ventas_index', compact('ventas'));
     }
@@ -26,6 +26,9 @@ class VentaController extends Controller
      */
     public function create()
     {
+        $ultimaVenta = Venta::orderBy('id', 'desc')->first();
+        $venta = new Venta;
+        $venta->id = isset($ultimaVenta) ? $ultimaVenta->id + 1 : 1;
 
         return view('ventas_create', compact('venta'));
     }
