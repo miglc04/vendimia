@@ -44,7 +44,7 @@
   </nav>
 
   <main role="main" class="flex-shrink-0 pt-5">
-    <div class="container mt-4">
+    <div class="container mt-4" id="app">
       @yield('main')
     </div>
   </main>
@@ -65,6 +65,8 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js"
     integrity="sha384-w1Q4orYjBQndcko6MimVbzY0tgp4pWB4lZ7lr30WKz0vr/aWKhXdBNmNb5D92v7s"
     crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 
   {{-- Extra Scripts --}}
   @yield('scripts')
