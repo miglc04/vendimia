@@ -7,7 +7,7 @@ use Faker\Generator as Faker;
 
 $factory->define(Articulo::class, function (Faker $faker) {
     return [
-    	'descripcion' => $faker->text(100),
+    	'descripcion' => $faker->text(20),
     	'modelo' => $faker->text(15),
     	'precio' => $faker->randomNumber(4),
     	'existencia' => $faker->randomNumber(2)
