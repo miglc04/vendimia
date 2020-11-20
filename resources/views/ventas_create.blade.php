@@ -18,8 +18,8 @@
           v-model="cliente.nombreCompleto"
           v-on:keyup="buscarCliente">
         <div v-if="cliente.id == 0" class="border">
-          <option
-            v-for="cliente of clientes"
+          <option style="cursor: pointer;"
+            v-for="cliente of clientesBusqueda"
             v-on:click="setCliente(cliente)">@{{ nombreCompleto(cliente) }}</option>
         </div>
       </div>
@@ -33,11 +33,13 @@
           v-model="articulo.descripcion"
           v-on:keyup="buscarArticulo">
         <div v-if="articulo.id == 0" class="border">
-          <option v-for="articulo of articulos">@{{ articulo.descripcion }}</option>
+          <option style="cursor: pointer;"
+            v-for="articulo of articulosBusqueda"
+            v-on:click="setArticulo(articulo)">@{{ articulo.descripcion }}</option>
         </div>
       </div>
       <div class="col-md-2">
-        <button type="button" class="btn btn-secondary">Agregar</button>
+        <button type="button" class="btn btn-secondary" v-on:click="agregarArticuloCompra">Agregar</button>
       </div>
     </div>
   </section>
@@ -54,7 +56,13 @@
         </tr>
       </thead>
       <tbody>
-
+        <tr v-for="articulo of articulosVenta">
+          <td>@{{ articulo.descripcion }}</td>
+          <td>@{{ articulo.modelo }}</td>
+          <td><input type="number" v-model="articulo.cantidad"></td>
+          <td>@{{ formatoNumero( articulo.precio ) }}</td>
+          <td>@{{ importe(articulo) }}</td>
+        </tr>
       </tbody>
     </table>
   </section>
@@ -66,22 +74,25 @@
       el: ('#app'),
       data: {
         cliente: { id: 0, nombreCompleto: '', rfc: '' },
-        articulo: { id: 0, descripcion: '' },
-        clientes: [],
-        articulos: []
+        articulo: { id: 0, descripcion: '', modelo: '', cantidad: 1, precio: 0, importe: 0 },
+        clientesBusqueda: [],
+        articulosBusqueda: [],
+        articulosVenta: []
       },
       watch: {
         'cliente.nombreCompleto': function (cadena) {
           if (cadena.trim().length < 3) {
             this.cliente.id = 0
             this.cliente.rfc = ''
-            this.clientes = []
+            this.clientesBusqueda = []
           }
         },
         'articulo.descripcion': function (cadena) {
           if (cadena.trim().length < 3) {
             this.articulo.id = 0
-            this.articulos = []
+            this.articulo.modelo = ''
+            this.articulo.precio = 0
+            this.articulosBusqueda = []
           }
         }
       },
@@ -91,7 +102,7 @@
           if (this.cliente.id == 0 && this.cliente.nombreCompleto.trim().length >= 3) {
             axios.get('/busqueda/clientes', { params: { cliente: this.cliente.nombreCompleto} })
             .then(function (response) {
-              this_.clientes = response.data
+              this_.clientesBusqueda = response.data
             })
             .catch(function (error) {
               console.log(error)
@@ -111,12 +122,33 @@
           if (this.articulo.descripcion.trim().length >= 3) {
             axios.get('/busqueda/articulos', { params: { articulo: this.articulo.descripcion} })
             .then(function (response) {
-              this_.articulos = response.data
+              this_.articulosBusqueda = response.data
             })
             .catch(function (error) {
               console.log(error)
             })
           }
+        },
+        setArticulo: function (articulo) {
+          this.articulo.id = articulo.id
+          this.articulo.descripcion = articulo.descripcion
+          this.articulo.modelo = articulo.modelo
+          this.articulo.precio = parseInt(articulo.precio)
+        },
+        agregarArticuloCompra: function () {
+          if (this.articulo.id == 0) {
+            alert("Primero tienes que elegir un artículo")
+            return
+          }
+          var articulo_ = Object.assign({}, this.articulo)
+          this.articulosVenta.push(articulo_)
+          this.articulo.descripcion = ''
+        },
+        formatoNumero: function (num) {
+          return num.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')
+        },
+        importe: function (articulo) {
+          return this.formatoNumero( articulo.cantidad * articulo.precio )
         }
       }
     });
