@@ -45,7 +45,7 @@
   </section>
 
   <section>
-    <table class="table table-striped table-hover">
+    <table class="table">
       <thead>
         <tr>
           <th>Descripción Artículo</th>
@@ -62,9 +62,14 @@
           <td>@{{ articulo.modelo }}</td>
           <td><input type="number" v-model="articulo.cantidad" v-on:change="validarExistenciaMaxima(articulo)"></td>
           <td>@{{ formatoNumero( articulo.precio ) }}</td>
-          <td>@{{ importe(articulo) }}</td>
+          <td>@{{ formatoNumero( importe(articulo) ) }}</td>
           <td><button type="button" v-on:click="eliminarArticuloVenta(articulo)"><i class="fa fa-times"></i></button></td>
         </tr>
+        <template v-if="articulosVenta.length != 0">
+          <tr> <td colspan="3"></td> <td>Enganche: </td> <td> @{{ formatoNumero(enganche) }}</td> </tr>
+          <tr> <td colspan="3"></td> <td>Bonificación Enganche: </td> <td> 0,000.00</td> </tr>
+          <tr> <td colspan="3"></td> <td>Total: </td> <td> 0,000.00</td> </tr>
+        </template>
       </tbody>
     </table>
   </section>
@@ -73,6 +78,7 @@
 @section('scripts')
   <script type="text/javascript">
     var tasa_financiamiento = {{ $configuracion->tasa_financiamiento }},
+      porc_enganche = {{ $configuracion->porc_enganche }},
       plazo_maximo = {{ $configuracion->plazo_maximo }};
 
     const app = new Vue({
@@ -168,7 +174,22 @@
           return num.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')
         },
         importe: function (articulo) {
-          return this.formatoNumero( articulo.cantidad * articulo.precio )
+          return articulo.cantidad * articulo.precio
+        }
+      },
+      computed: {
+        importeSubtotal: function () {
+          var vm = this,
+            importeSubtotal = 0
+
+          this.articulosVenta.forEach(function (articulo) {
+            importeSubtotal += vm.importe(articulo)
+          })
+
+          return importeSubtotal
+        },
+        enganche: function () {
+          return this.importeSubtotal * (porc_enganche / 100)
         }
       }
     });
