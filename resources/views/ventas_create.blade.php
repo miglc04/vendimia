@@ -66,9 +66,21 @@
           <td><button type="button" v-on:click="eliminarArticuloVenta(articulo)"><i class="fa fa-times"></i></button></td>
         </tr>
         <template v-if="articulosVenta.length != 0">
-          <tr> <td colspan="3"></td> <td>Enganche: </td> <td> @{{ formatoNumero(enganche) }}</td> </tr>
-          <tr> <td colspan="3"></td> <td>Bonificación Enganche: </td> <td> 0,000.00</td> </tr>
-          <tr> <td colspan="3"></td> <td>Total: </td> <td> 0,000.00</td> </tr>
+          <tr>
+            <td colspan="3"></td>
+            <td>Enganche:</td>
+            <td>@{{ formatoNumero(enganche) }}</td>
+          </tr>
+          <tr>
+            <td colspan="3"></td>
+            <td>Bonificación Enganche:</td>
+            <td>@{{ formatoNumero(bonificacionEnganche) }}</td>
+          </tr>
+          <tr>
+            <td colspan="3"></td>
+            <td>Total: </td>
+            <td>@{{ formatoNumero(totalAdeudo) }}</td>
+          </tr>
         </template>
       </tbody>
     </table>
@@ -190,6 +202,12 @@
         },
         enganche: function () {
           return this.importeSubtotal * (porc_enganche / 100)
+        },
+        bonificacionEnganche: function () {
+          return this.enganche * ((tasa_financiamiento * plazo_maximo) / 100)
+        },
+        totalAdeudo: function () {
+          return this.importeSubtotal - this.enganche - this.bonificacionEnganche
         }
       }
     });
