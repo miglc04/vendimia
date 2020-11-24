@@ -79,7 +79,7 @@
       el: ('#app'),
       data: {
         cliente: { id: 0, nombreCompleto: '', rfc: '' },
-        articulo: { id: 0, descripcion: '', modelo: '', cantidad: 1, precio: 0, importe: 0 },
+        articulo: { id: 0, descripcion: '', cantidad: 1, precio: 0, importe: 0 },
         clientesBusqueda: [],
         articulosBusqueda: [],
         articulosVenta: []
@@ -95,8 +95,6 @@
         'articulo.descripcion': function (cadena) {
           if (cadena.trim().length < 3) {
             this.articulo.id = 0
-            this.articulo.modelo = ''
-            this.articulo.precio = 0
             this.articulosBusqueda = []
           }
         }
@@ -135,10 +133,11 @@
           }
         },
         setArticulo: function (articulo) {
-          this.articulo.id = articulo.id
-          this.articulo.descripcion = articulo.descripcion
-          this.articulo.modelo = articulo.modelo
-          this.articulo.precio = parseInt(articulo.precio)
+          var precio_ = parseInt(articulo.precio) * (1 + (tasa_financiamiento * plazo_maximo) /100)
+
+          this.articulo = articulo
+          this.articulo.precio = precio_
+          this.articulo.cantidad = 1
         },
         agregarArticuloCompra: function () {
           if (this.articulo.id == 0) {
