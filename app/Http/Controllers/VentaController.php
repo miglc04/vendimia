@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Venta;
+use App\Configuracion;
 use Illuminate\Http\Request;
 
 class VentaController extends Controller
@@ -27,10 +28,11 @@ class VentaController extends Controller
     public function create()
     {
         $ultimaVenta = Venta::orderBy('id', 'desc')->first();
+        $configuracion = Configuracion::orderBy('id', 'desc')->first();
         $venta = new Venta;
         $venta->id = isset($ultimaVenta) ? $ultimaVenta->id + 1 : 1;
 
-        return view('ventas_create', compact('venta'));
+        return view('ventas_create', compact('venta', 'configuracion'));
     }
 
     /**

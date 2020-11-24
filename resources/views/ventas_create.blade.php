@@ -72,6 +72,9 @@
 
 @section('scripts')
   <script type="text/javascript">
+    var tasa_financiamiento = {{ $configuracion->tasa_financiamiento }},
+      plazo_maximo = {{ $configuracion->plazo_maximo }};
+
     const app = new Vue({
       el: ('#app'),
       data: {
