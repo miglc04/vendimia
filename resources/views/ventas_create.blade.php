@@ -60,7 +60,7 @@
         <tr v-for="articulo of articulosVenta">
           <td>@{{ articulo.descripcion }}</td>
           <td>@{{ articulo.modelo }}</td>
-          <td><input type="number" v-model="articulo.cantidad"></td>
+          <td><input type="number" v-model="articulo.cantidad" v-on:change="validarExistenciaMaxima(articulo)"></td>
           <td>@{{ formatoNumero( articulo.precio ) }}</td>
           <td>@{{ importe(articulo) }}</td>
           <td><button type="button"><i class="fa fa-times"></i></button></td>
@@ -144,9 +144,21 @@
             alert("Primero tienes que elegir un artículo")
             return
           }
+
+          if (this.articulo.existencia == 0) {
+            alert("El artículo seleccionado no cuenta con existencia, favor de verificar.")
+            return
+          }
+
           var articulo_ = Object.assign({}, this.articulo)
           this.articulosVenta.push(articulo_)
           this.articulo.descripcion = ''
+        },
+        validarExistenciaMaxima: function (articulo) {
+          if (articulo.cantidad > articulo.existencia) {
+            alert("El artículo no cuenta con existencia suficientes.")
+            articulo.cantidad = articulo.existencia
+          }
         },
         formatoNumero: function (num) {
           return num.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')
