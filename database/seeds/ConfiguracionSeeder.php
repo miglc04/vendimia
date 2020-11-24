@@ -11,6 +11,12 @@ class ConfiguracionSeeder extends Seeder
      */
     public function run()
     {
-    	factory(App\Configuracion::class)->create();
+    	// factory(App\Configuracion::class)->create();
+
+        \App\Configuracion::create([
+            'tasa_financiamiento' => 2.3,
+            'porc_enganche' => 20,
+            'plazo_maximo' => 12
+        ]);
     }
 }
