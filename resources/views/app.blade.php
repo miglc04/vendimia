@@ -13,6 +13,10 @@
     integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2"
     crossorigin="anonymous">
 
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+    integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN"
+    crossorigin="anonymous">
+
   @yield('styles')
 </head>
 
@@ -25,10 +29,10 @@
     <div class="collapse navbar-collapse" id="navbarCollapse">
       <ul class="navbar-nav mr-auto">
         <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <a class="nav-link dropdown-toggle" href="/" aria-expanded="true">
             Inicio
           </a>
-          <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <div class="dropdown-menu show">
             <a class="dropdown-item" href="{{ route('ventas.index') }}">Ventas</a>
             <div class="dropdown-divider"></div>
             <a class="dropdown-item" href="#">Clientes</a>
@@ -38,14 +42,18 @@
         </li>
       </ul>
       <div class="text-white">
-        Fecha {{ date('d/m/Y') }}
+        Fecha: {{ date('d/m/Y') }}
       </div>
     </div>
   </nav>
 
   <main role="main" class="flex-shrink-0 pt-5">
     <div class="container mt-4" id="app">
-      @yield('main')
+      <div class="row">
+        <div class="offset-md-1 col-md-11">
+          @yield('main')
+        </div>
+      </div>
     </div>
   </main>
 

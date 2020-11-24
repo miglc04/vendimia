@@ -53,6 +53,7 @@
           <th>Cantidad</th>
           <th>Precio</th>
           <th>Importe</th>
+          <th></th>
         </tr>
       </thead>
       <tbody>
@@ -62,6 +63,7 @@
           <td><input type="number" v-model="articulo.cantidad"></td>
           <td>@{{ formatoNumero( articulo.precio ) }}</td>
           <td>@{{ importe(articulo) }}</td>
+          <td><button type="button"><i class="fa fa-times"></i></button></td>
         </tr>
       </tbody>
     </table>
