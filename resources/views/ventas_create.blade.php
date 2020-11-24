@@ -63,7 +63,7 @@
           <td><input type="number" v-model="articulo.cantidad" v-on:change="validarExistenciaMaxima(articulo)"></td>
           <td>@{{ formatoNumero( articulo.precio ) }}</td>
           <td>@{{ importe(articulo) }}</td>
-          <td><button type="button"><i class="fa fa-times"></i></button></td>
+          <td><button type="button" v-on:click="eliminarArticuloVenta(articulo)"><i class="fa fa-times"></i></button></td>
         </tr>
       </tbody>
     </table>
@@ -159,6 +159,10 @@
             alert("El artículo no cuenta con existencia suficientes.")
             articulo.cantidad = articulo.existencia
           }
+        },
+        eliminarArticuloVenta: function (articulo) {
+          var index = this.articulosVenta.indexOf(articulo)
+          this.articulosVenta.splice(index, 1)
         },
         formatoNumero: function (num) {
           return num.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')
