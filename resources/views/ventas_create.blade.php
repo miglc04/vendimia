@@ -105,7 +105,7 @@
           <td>$ @{{ formatoNumero(calcularImporteAbono(plazo)) }}</td>
           <td>TOTAL A PAGAR $ @{{ formatoNumero(calcularTotalAPagar(plazo)) }}</td>
           <td>SE AHORRA $ @{{ formatoNumero(calcularImporteAhorra(plazo)) }}</td>
-          <td><input type="radio"></td>
+          <td><input type="radio" v-bind:value="plazo" v-model="plazoSeleccionado"></td>
         </tr>
       </tbody>
     </table>
@@ -114,7 +114,8 @@
   {{-- Botones --}}
   <section class="text-right my-4">
     <button class="btn btn-success">Cancelar</button>
-    <button class="btn btn-success" v-on:click="validarDatosDeCompra">Siguiente</button>
+    <button class="btn btn-success" v-on:click="validarDatosDeCompra" v-if="!verAbonos">Siguiente</button>
+    <button class="btn btn-success" v-on:click="realizarVenta" v-if="verAbonos">Guardar</button>
   </section>
 
 
@@ -135,7 +136,8 @@
         articulosBusqueda: [],
         articulosVenta: [],
         verAbonos: false,
-        plazos: [3, 6, 9, 12]
+        plazos: [3, 6, 9, 12],
+        plazoSeleccionado: 0
       },
       watch: {
         'cliente.nombreCompleto': function (cadena) {
@@ -154,11 +156,11 @@
       },
       methods: {
         buscarCliente: function () {
-          var this_ = this;
+          var vm = this;
           if (this.cliente.id == 0 && this.cliente.nombreCompleto.trim().length >= 3) {
             axios.get('/busqueda/clientes', { params: { cliente: this.cliente.nombreCompleto} })
             .then(function (response) {
-              this_.clientesBusqueda = response.data
+              vm.clientesBusqueda = response.data
             })
             .catch(function (error) {
               console.log(error)
@@ -174,11 +176,11 @@
           this.cliente.rfc = cliente.rfc
         },
         buscarArticulo: function () {
-          var this_ = this;
+          var vm = this;
           if (this.articulo.descripcion.trim().length >= 3) {
             axios.get('/busqueda/articulos', { params: { articulo: this.articulo.descripcion} })
             .then(function (response) {
-              this_.articulosBusqueda = response.data
+              vm.articulosBusqueda = response.data
             })
             .catch(function (error) {
               console.log(error)
@@ -238,6 +240,29 @@
         },
         calcularImporteAhorra: function (plazo) {
           return this.totalAdeudo - this.calcularTotalAPagar(plazo)
+        },
+        realizarVenta: function () {
+          if (this.plazoSeleccionado === 0) {
+            return alert("Debe seleccionar un plazo para realizar el pago de su compra")
+          }
+
+          console.log(this.plazoSeleccionado);
+
+          // var vm = this
+          // axios.post('/ventas', {
+          //   params:
+          //     {
+          //       cliente: vm.cliente,
+          //       articulosVenta: vm.articulosVenta,
+          //       total: vm.totalAdeudo
+          //     }
+          //   })
+          // .then(function (response) {
+          //   location.href = '/ventas'
+          // })
+          // .catch(function (error) {
+          //   console.log(error)
+          // })
         },
         formatoNumero: function (num) {
           return num.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')
