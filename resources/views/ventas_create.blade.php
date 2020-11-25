@@ -7,6 +7,7 @@
     <h1>Registro de Ventas</h1>
   </div>
 
+  {{-- Cliente y Articulos --}}
   <section class="border border-primary rounded-bottom">
     <div class="text-right mr-4">
       <span class="font-weight-bold text-success">Folio de venta: {{ $venta->id }}</span>
@@ -90,10 +91,33 @@
     </table>
   </section>
 
+  {{-- Abonos Mensuales --}}
+  <section class="my-4" v-if="verAbonos">
+    <table class="table">
+      <thead>
+        <tr>
+          <th colspan="5" class="text-center text-primary bg-light">ABONOS MENSUALES</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="plazo of plazos">
+          <td>@{{ plazo }} ABONOS DE</td>
+          <td>$ @{{ formatoNumero(calcularImporteAbono(plazo)) }}</td>
+          <td>TOTAL A PAGAR $ @{{ formatoNumero(calcularTotalAPagar(plazo)) }}</td>
+          <td>SE AHORRA $ @{{ formatoNumero(calcularImporteAhorra(plazo)) }}</td>
+          <td><input type="radio"></td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  {{-- Botones --}}
   <section class="text-right my-4">
     <button class="btn btn-success">Cancelar</button>
     <button class="btn btn-success" v-on:click="validarDatosDeCompra">Siguiente</button>
   </section>
+
+
 @endsection
 
 @section('scripts')
@@ -109,7 +133,9 @@
         articulo: { id: 0, descripcion: '', cantidad: 1, precio: 0, importe: 0 },
         clientesBusqueda: [],
         articulosBusqueda: [],
-        articulosVenta: []
+        articulosVenta: [],
+        verAbonos: false,
+        plazos: [3, 6, 9, 12]
       },
       watch: {
         'cliente.nombreCompleto': function (cadena) {
@@ -200,7 +226,18 @@
         validarDatosDeCompra: function () {
           if (this.cliente.id === 0 || this.articulosVenta.length === 0) {
             return alert("Los datos ingresados no son correctos, favor de verificar")
-          } else {}
+          } else {
+            this.verAbonos = true
+          }
+        },
+        calcularTotalAPagar: function (plazo) {
+          return this.precioContado * (1 + (tasa_financiamiento * plazo) / 100)
+        },
+        calcularImporteAbono: function (plazo) {
+          return this.calcularTotalAPagar(plazo) / plazo
+        },
+        calcularImporteAhorra: function (plazo) {
+          return this.totalAdeudo - this.calcularTotalAPagar(plazo)
         },
         formatoNumero: function (num) {
           return num.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')
@@ -228,6 +265,9 @@
         },
         totalAdeudo: function () {
           return this.importeSubtotal - this.enganche - this.bonificacionEnganche
+        },
+        precioContado: function () {
+          return this.totalAdeudo / (1 + ((tasa_financiamiento * plazo_maximo) / 100))
         }
       }
     });
