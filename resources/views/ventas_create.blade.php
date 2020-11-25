@@ -42,9 +42,7 @@
         <button type="button" class="btn btn-secondary" v-on:click="agregarArticuloCompra">Agregar</button>
       </div>
     </div>
-  </section>
 
-  <section>
     <table class="table">
       <thead>
         <tr>
@@ -57,33 +55,44 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="articulo of articulosVenta">
+        <tr v-for="articulo of articulosVenta" class="bg-light">
           <td>@{{ articulo.descripcion }}</td>
           <td>@{{ articulo.modelo }}</td>
-          <td><input type="number" v-model="articulo.cantidad" v-on:change="validarExistenciaMaxima(articulo)"></td>
+          <td><input type="number"
+            v-model="articulo.cantidad"
+            v-on:change="validarCantidadMinima(articulo)"
+            v-on:change="validarExistenciaMaxima(articulo)"></td>
           <td>@{{ formatoNumero( articulo.precio ) }}</td>
-          <td>@{{ formatoNumero( importe(articulo) ) }}</td>
+          <td class="text-right">@{{ formatoNumero( importe(articulo) ) }}</td>
           <td><button type="button" v-on:click="eliminarArticuloVenta(articulo)"><i class="fa fa-times"></i></button></td>
         </tr>
         <template v-if="articulosVenta.length != 0">
-          <tr>
+          <tr class="text-right">
             <td colspan="3"></td>
-            <td>Enganche:</td>
+            <td><b>Enganche:</b></td>
             <td>@{{ formatoNumero(enganche) }}</td>
+            <td></td>
           </tr>
-          <tr>
+          <tr class="text-right">
             <td colspan="3"></td>
-            <td>Bonificación Enganche:</td>
+            <td><b>Bonificación Enganche:</b></td>
             <td>@{{ formatoNumero(bonificacionEnganche) }}</td>
+            <td></td>
           </tr>
-          <tr>
+          <tr class="text-right">
             <td colspan="3"></td>
-            <td>Total: </td>
+            <td><b>Total: </b></td>
             <td>@{{ formatoNumero(totalAdeudo) }}</td>
+            <td></td>
           </tr>
         </template>
       </tbody>
     </table>
+  </section>
+
+  <section class="text-right my-4">
+    <button class="btn btn-success">Cancelar</button>
+    <button class="btn btn-success" v-on:click="validarDatosDeCompra">Siguiente</button>
   </section>
 @endsection
 
@@ -157,6 +166,12 @@
           this.articulo.precio = precio_
           this.articulo.cantidad = 1
         },
+        validarCantidadMinima: function (articulo) {
+          if (articulo.cantidad <= 0) {
+            alert("Cantidad no permitida")
+            articulo.cantidad = 1
+          }
+        },
         agregarArticuloCompra: function () {
           if (this.articulo.id == 0) {
             alert("Primero tienes que elegir un artículo")
@@ -181,6 +196,11 @@
         eliminarArticuloVenta: function (articulo) {
           var index = this.articulosVenta.indexOf(articulo)
           this.articulosVenta.splice(index, 1)
+        },
+        validarDatosDeCompra: function () {
+          if (this.cliente.id === 0 || this.articulosVenta.length === 0) {
+            return alert("Los datos ingresados no son correctos, favor de verificar")
+          } else {}
         },
         formatoNumero: function (num) {
           return num.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')
