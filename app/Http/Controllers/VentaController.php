@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Venta;
+use App\Articulo;
+use App\VentaDetalle;
 use App\Configuracion;
 use Illuminate\Http\Request;
 
@@ -43,7 +45,32 @@ class VentaController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $params = $request->params;
+        $cliente = $params['cliente'];
+        $articulos = $params['articulosVenta'];
+        $total = $params['total'];
+
+        \DB::beginTransaction();
+        try {
+            $venta = new Venta;
+            $venta->cliente_id = $cliente['id'];
+            $venta->total = $total;
+            $venta->save();
+            foreach ($articulos as $articulo) {
+                $detalle = new VentaDetalle;
+                $detalle->articulo_id = $articulo['id'];
+                $detalle->cantidad = $articulo['cantidad'];
+
+                $venta->detalles()->save($detalle);
+                Articulo::find($articulo['id'])->decrement('existencia', $articulo['cantidad']);
+            }
+        } catch (Exception $e) {
+            \Log::error($e);
+            \DB::rollback();
+            return response()->json(['estatus' => false]);
+        }
+        \DB::commit();
+        return response()->json(['estatus' => true]);
     }
 
     /**

@@ -246,23 +246,26 @@
             return alert("Debe seleccionar un plazo para realizar el pago de su compra")
           }
 
-          console.log(this.plazoSeleccionado);
-
-          // var vm = this
-          // axios.post('/ventas', {
-          //   params:
-          //     {
-          //       cliente: vm.cliente,
-          //       articulosVenta: vm.articulosVenta,
-          //       total: vm.totalAdeudo
-          //     }
-          //   })
-          // .then(function (response) {
-          //   location.href = '/ventas'
-          // })
-          // .catch(function (error) {
-          //   console.log(error)
-          // })
+          var vm = this
+          axios.post('/ventas', {
+            params:
+              {
+                cliente: vm.cliente,
+                articulosVenta: vm.articulosVenta,
+                total: vm.totalAdeudo
+              }
+            })
+          .then(function (response) {
+            if (response.data.estatus) {
+              alert("Bien Hecho, Tu venta ha sido registrada correctamente”")
+              location.href = '/ventas'
+            } else {
+              alert("Algo salí mal")
+            }
+          })
+          .catch(function (error) {
+            console.log(error)
+          })
         },
         formatoNumero: function (num) {
           return num.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')
