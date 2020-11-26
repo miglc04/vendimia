@@ -17,7 +17,7 @@ class VentaController extends Controller
      */
     public function index()
     {
-        $ventas = Venta::orderBy('id', 'desc')->get();
+        $ventas = Venta::with('cliente')->orderBy('id', 'desc')->get();
 
         return view('ventas_index', compact('ventas'));
     }

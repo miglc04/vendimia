@@ -20,11 +20,11 @@
       <tbody>
         @foreach ($ventas as $venta)
           <tr>
-            <td>$venta->id</td>
-            <td>$venta->cliente->id</td>
-            <td>$venta->cliente->nombreCompleto</td>
-            <td>$venta->total</td>
-            <td>$venta->fechaVenta</td>
+            <td>{{  $venta->id }}</td>
+            <td>{{  $venta->cliente->id }}</td>
+            <td>{{  $venta->cliente->nombre_completo }}</td>
+            <td>{{  number_format($venta->total, 2) }}</td>
+            <td>{{  $venta->fecha_venta }}</td>
           </tr>
         @endforeach
       </tbody>
