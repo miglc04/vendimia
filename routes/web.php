@@ -17,6 +17,10 @@ Route::get('/', function () {
     return view('inicio');
 });
 
+Route::get('articulos', function() {
+    return view('articulos');
+});
+
 Route::resource('ventas', 'VentaController');
 
 /* AJAX */
